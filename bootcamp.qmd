@@ -1,0 +1,491 @@
+---
+title: "Bootcamp R para jornalistas de dados"
+subtitle: "Coda.br 2023 - Escola de Dados - novembro de 2023"
+author: "[**Ana Carolina Moreno**](https://www.linkedin.com/in/anacarolinamoreno) e [**Jean Prado**](https://www.linkedin.com/in/jeangprado) (que infelizmente não pode vir...)"
+format: revealjs
+incremental: false
+embed-resources: true
+editor: visual
+---
+
+## Olá!
+
+```{r}
+library(tidyverse)
+```
+
+**Ana Carolina Moreno:** Jornalista de dados sênior da TV Globo. Produz reportagens dirigidas por dados desde 2017 usando R e SQL. Co-organiza a R-Ladies São Paulo desde 2019. <br> <br> **Jean Prado:** Jornalista e líder da área de Transformação Digital no Greenpeace Brasil. É instrutore certificade de Tidyverse pela Posit (RStudio) e co-organiza a R-Ladies São Paulo desde 2020.
+
+## Cronograma previsto
+
+<br> **Parte 1 (sábado 11h15-12h45): Introdução** <br> R + RStudio + ciência de dados + Tidyverse <br> <br> **Parte 2 (sábado 15h45-17h15): Importação e análise dos dados** <br> escrevendo os primeiros códigos <br> <br> **Parte 3 (domingo 09h30-11h15): Prática e ideias de pauta**
+
+## Você deveria estar aqui hoje?
+
+Você se enquadra em uma das situações abaixo?
+
+-   Não sei nada sobre R, mas sei outras linguagens
+
+-   Não conheço nada de nenhuma linguagem de programação
+
+-   Já tentei aprender R no passado, mas esqueci tudo
+
+-   Sei só um básico de Excel
+
+-   Nunca mexi no Excel
+
+-   Acho que sou "de humanas demais" pra saber programar
+
+-   Sempre fiquei de recuperação em matemática no colégio
+
+-   Quero sempre aprender coisas novas
+
+## Então a resposta é SIM!
+
+![Vamos nessa!](img/img01_conrad-poirier.png)
+
+## Instalação dos programas
+
+Tutorial em vídeo para instalação no Windows: <https://youtu.be/vKgjx52TYBw>
+
+Tutorial da Curso-R (Windows, Mac, Linux): <https://livro.curso-r.com/1-instalacao.html>
+
+-   Instalar o R
+
+-   Instalar o RStudio
+
+-   Salvar esse arquivo zip na pasta onde você for trabalhar: <https://bit.ly/codabr2023>
+
+## =\> Introdução
+
+::: incremental
+-   **1- Por que jornalistas aprendem a programar?**
+
+-   **2- Que tipo de bases de dados podemos usar no R?**
+
+-   **3- Quais termos preciso aprender?**
+
+-   **4- O que conseguimos fazer com essas bases no R?**
+:::
+
+. . .
+
+## 1- Jornalistas + programação
+
+Resposta: porque nem todas as bases abrem no Excel
+
+![](img/img02_excel.png)
+
+## 1.1- Os limites do Excel
+
+Limite do Excel: **1.048.576 linhas e 16.384 colunas** <br> <br> Para efeito de comparação...
+
+-   Base de SRAG do Sivep-Gripe só do ano de 2021 (atualizado até fev/2022): **1.715.835 linhas**
+
+-   Base do Enem 2018: **5,5 milhões de linhas** (uma linha por pessoa inscrita)
+
+-   Base de beneficiários do Auxílio Emergencial: **40 milhões de linhas novas a cada mês**
+
+## 2- As bases de dados e o R
+
+Podemos usar bases que tenham formato de "tabela":
+
+-   cada linha é um registro, e cada coluna traz algum detalhe sobre aquele registro
+
+-   as colunas ou linhas não estão mescladas ou agrupadas
+
+-   em geral, são os arquivos do poder público salvos no formato .csv (mas nem sempre)
+
+## 2.1 - Exemplo de base de dados
+
+Eleição para a Alesp em 2022:
+
+```{r}
+alesp <- read.csv2("data/alesp.csv", fileEncoding = "Windows-1252")
+knitr::kable(head(alesp)) |>  
+  kableExtra::kable_styling(font_size = 16)
+```
+
+## 2.2 - Outra forma de ver
+
+![](img/img05_df.png)
+
+## 3- Breve glossário
+
+-   **Data frame**: sinônimo para "tabela" ou "planilha"
+
+-   **Tibble**: idem acima
+
+-   **Objeto**: é um data frame criado dentro do RStudio
+
+-   **Observação**: é sinônimo de "linha" na sua tabela
+
+-   **Variável**: é sinônimo de "coluna" na sua tabela
+
+## 4- Potencial do R
+
+-   **Abrir** uma base de dados
+
+-   **Limpar** a base de dados (ex: formatar uma data ou tirar os acentos dos nomes)
+
+-   **Transformar** a base de dados (ex: a partir da coluna de data, criar uma coluna nova só com o mês)
+
+-   **Visualizar** os dados em formatos de gráficos ou mapas (ou mesmo relatórios em PDF ou websites)
+
+-   Etc. etc. etc.
+
+## 4.1- Ciclo da ciência de dados
+
+(fonte: [R for Data Science](https://r4ds.had.co.nz/introduction.html))
+
+![](img/img03_r4ds.png)
+
+## =\> Conceitos iniciais de programação
+
+![](img/img04_hacker.png)
+
+## 1- Operador de atribuição: \<-
+
+(pense nele como uma **preposição**!)
+
+-   É como criamos objetos para guardar valores.
+-   Atalho: *ALT + MENOS*
+-   **Exemplo:** calculando a duração desse bootcamp.
+
+```{r}
+#| echo: true
+#| fig-width: 10
+#| fig-height: 4.5
+total_sessoes <- 3
+duracao_sessao_min <- 90
+duracao_total <- total_sessoes * duracao_sessao_min
+duracao_total
+```
+
+## 2- O que pode ser um "valor"
+
+(pense neles como **substantivos**!)
+
+-   Valores não precisam ser números.
+-   Eles podem ser texto, por exemplo.
+-   Porém, precisam ser escritos entre aspas.
+-   Nesse caso, o R entende que o objeto é da classe de "character"
+
+```{r}
+#| echo: true
+#| fig-width: 10
+#| fig-height: 4.5
+quem_manda_aqui <- "Carol + Lucas"
+quem_manda_aqui
+```
+
+## 2.1 - As classes dos objetos
+
+-   Os objetos podem ter vários tipos (um texto, um número etc.). É o que chamamos de **classe**.
+
+-   As classes principais são:
+
+| CLASSE        | SINÔNIMO                            |
+|---------------|-------------------------------------|
+| **character** | texto, string, caractere            |
+| **numeric**   | número, double, valor real, integer |
+| **logic**     | lógico, booleano, valor TRUE/FALSE  |
+
+## 2.2- Exemplos de classes
+
+**character:** "Carol" / "41" / "verdadeiro"
+
+**numeric:** -5 / 1.5 / 3.1416
+
+**logic:** TRUE / FALSE
+
+## 3- Operadores relacionais
+
+| Operador | Descrição          |
+|----------|--------------------|
+| ==       | igual              |
+| !=       | diferente          |
+| \>       | maior              |
+| \<       | menor              |
+| \>=      | maior ou igual a   |
+| \<=      | menor ou igual que |
+
+## 4- Operadores lógicos
+
+| Operador | Descrição          |
+|----------|--------------------|
+| !        | significa NÃO      |
+| &        | significa E        |
+| `|`      | significa OU       |
+| %in%     | significa "contém" |
+
+## 5- O operador pipe: %\>% ou \|\>
+
+(pense nele como uma **vírgula**!)
+
+-   pipe = cano, encanamento, fazer a informação fluir
+
+-   o valor do lado esquerdo do pipe vira argumento para a função do lado direito e assim por diante
+
+![](img/img07_pipe.png)
+
+-   Atalho: *CTRL + SHIFT + M*
+
+## 6- O que é uma função?
+
+-   Função: uma palavra que, no código, dá um comando ao computador.
+-   Ela é escrita seguida de parênteses.
+-   Nos parênteses incluímos os atributos (inputs).
+-   O output vai ser a informação que o computador retorna após rodar a função.
+
+(pense nela como um **verbo**!)
+
+## 6.1- Função no Excel
+
+<br><br>
+
+![Versão no Excel](img/img06_excel.png)
+
+## 6.2- Função no R
+
+<br>
+
+```{r}
+#| echo: true
+#| fig-width: 10
+#| fig-height: 4.5
+altura_carol <- 1.54
+altura_lucas <- 1.89
+altura_fernando <- 1.69
+altura_media <- mean(c(altura_carol, altura_lucas, altura_fernando))
+altura_media
+```
+
+<br>
+
+-   mean = função para calcular a média
+-   argumentos = informações que vão entre parênteses para indicar o que a função deve fazer
+-   c() = para criar um vetor (uma lista com mais de um item a ser aplicado no cálculo)
+
+## 7- O que é um pacote de R?
+
+-   Conjunto de funções úteis pra determinada análise.
+
+-   Eles são disponibilizados em repositórios. Os dois principais repositórios são o [CRAN](https://cran.r-project.org/) e o [GitHub](https://github.com/).
+
+-   Os pacotes são **instalados apenas uma vez** e devem **ser carregados sempre** que queremos utilizá-los.
+
+## 7.1 - Instalar e carregar pacotes
+
+-   Para instalar um pacote que está no CRAN, usamos a função install.packages:
+
+    *install.packages("tidyverse")*
+
+-   Caso o pacote esteja no GitHub, é possível fazer a instalação via função install_github do pacote devtools:
+
+    *install.packages("devtools")*
+
+    *devtools::install_github('rfsaldanha/microdatasus')*
+
+-   Para carregar o pacote usamos a função library:
+
+    *library(tidyverse)* *library(microdatasus)*
+
+## 8- Boas práticas (resumo)
+
+**Nome de variáveis:**
+
+a)  Não usar maiúscula, espaços ou acentos pra criar o nome
+b)  Não começar o nome com um número
+c)  Escolher nomes úteis e não redundantes
+
+**Código e comentários:**
+
+a)  Inserir espaços só após as vírgulas e parênteses
+b)  Evite comentar demais e de menos (com a hashtag #)
+c)  Use a quebra de linha para facilitar a leitura
+
+## 9- Erros mais comuns!
+
+-   Rodar uma linha de código sem ter rodado as anteriores, que fazem parte de uma "sequência" de comandos para o programa
+
+-   Pequenos erros de digitação ao escrever o código
+
+-   Não selecionar o trecho inteiro de código na hora de rodar
+
+-   Dica: o pacote **tidylog** te dá um relatório de tudo o que ele fez, e ajuda a encontrar a origem dos erros
+
+## Tidyverse
+
+![](img/img08_tidyverse.png)
+
+## 1- O que é?
+
+-   Um conjunto de pacotes que compartilham a mesma gramática e estrutura.
+
+-   Quando você instala/carrega o tidyverse, todos esses pacotes vêm junto de uma vez.
+
+-   Serve pra fazer o trabalho de análise **mais rápido e fácil**
+
+## 2- Pacotes dentro do Tidyverse
+
+São muitos (<https://www.tidyverse.org/packages/>) Os mais úteis para o DDJ são os seguintes:
+
+-   **readr:** abrir arquivos (bases de dados) e salvar tabelas
+
+-   **dplyr:** manipular a base (filtrar, criar colunas, agrupar, resumir, ordenar etc.)
+
+-   **stringr:** arrumar textos (string) identifcando padrões (regex)
+
+-   **lubridate:** ajusta datas e horas (ex: AAAA-MM-DD)
+
+-   **ggplot2:** visualização de dados
+
+-   **magrittr:** para usar o pipe nos seus códigos
+
+## 3- 'Verbos mágicos' do Tidyverse
+
+Saber poucos comandos já basta pra começar a analisar!
+
+| FUNÇÃO        | O QUE FAZ                                     |
+|---------------|-----------------------------------------------|
+| **select**    | seleciona só algumas colunas da base          |
+| **filter**    | seleciona só algumas linhas da base           |
+| **mutate**    | cria colunas ou altera valores de uma coluna  |
+| **group_by**  | agrupa linhas de valores iguais em uma coluna |
+| **summarise** | par do group_by, cria o resumo desses grupos  |
+| **arrange**   | ordena a forma de visualizar a tabela         |
+
+## 4- Mais 'verbos úteis'
+
+| FUNÇÃO          | O QUE FAZ                                  |
+|-----------------|--------------------------------------------|
+| **read.csv**    | abre o seu arquivo separado por vírgula    |
+| **read.csv2**   | arquivo separado por ponto e vírgula       |
+| **write.csv**   | salva a tabela num arquivo no computador   |
+| **rename**      | renomeia uma coluna                        |
+| **replace**\*   | troca um valor p/ outro quando ele aparece |
+| **pivot**\*     | transforma linhas em colunas e vice-versa  |
+| **bind_rows**\* | junta as linhas de duas tabelas diferentes |
+| **str_sub**\*   | puxa só parte do valor de uma coluna       |
+
+## Exercícios
+
+Observem a tabela para responder às próximas questões.
+
+> [tabela alesp.csv no Google Planilhas](https://docs.google.com/spreadsheets/d/1xUkv3RJ-r8Vo9MMS0rFCkJsK7BC18VTm/edit?rtpof=true#gid=1570954024)
+
+## Pergunta 1:
+
+Quais mulheres foram eleitas em 2022? <br> <br> <br> <br> <br> (Dica: é com **"select"** ou com **"filter"**?)
+
+## Código 1:
+
+Quais mulheres foram eleitas em 2022?
+
+```{r}
+#| echo: true
+library(tidyverse)
+
+alesp <- read.csv2("data/alesp.csv",
+                   fileEncoding = "Windows-1252")
+
+sexo_feminino <- alesp |>
+  filter(genero == "FEMININO")
+  
+```
+
+## Resposta 1:
+
+Quais mulheres foram eleitas em 2022?
+
+```{r}
+knitr::kable(sexo_feminino)  |>  
+  kableExtra::kable_styling(font_size = 16)
+```
+
+## Pergunta 2:
+
+Qual foi a média de votos em 2022 por raça?
+
+## Código 2:
+
+Qual foi a média de votos em 2022 por raça?
+
+```{r}
+#| echo: true
+
+media_raca <- alesp |>
+  group_by(cor_raca) |> 
+  summarise(media_votos = mean(votos_2022))
+  
+```
+
+## Resposta 2:
+
+Qual foi a média de votos em 2022 por raça?
+
+```{r}
+knitr::kable(media_raca)  |>  
+  kableExtra::kable_styling(font_size = 28)
+```
+
+## Pergunta 3:
+
+Qual é o ranking de votos totais por partido em 2022?
+
+## Código 3:
+
+Qual é o ranking de votos totais por partido em 2022?
+
+```{r}
+#| echo: true
+
+votos_partidos <- alesp |>  
+  group_by(sigla_partido) |>  
+  summarise(total_votos = sum(votos_2022)) |> 
+  arrange(desc(total_votos))
+  
+```
+
+## Resposta 3:
+
+Qual é o ranking de votos totais por partido em 2022?
+
+```{r}
+knitr::kable(votos_partidos) |> 
+  kableExtra::kable_styling(font_size = 16)
+```
+
+## Pergunta 4:
+
+Qual deputado reeleito ganhou mais votos de 2018 para 2022?
+
+## Código 4:
+
+Qual deputado reeleito ganhou mais votos de 2018 para 2022?
+
+```{r}
+#| echo: true
+
+deputados <- alesp |>  
+  filter(!is.na(votos_2018)) |>  
+  group_by(nome_urna_candidato) |>  
+  summarise(total_votos_2018 = sum(votos_2018),
+            total_votos_2022 = sum(votos_2022)) |> 
+  mutate(variacao_votos = total_votos_2022 - total_votos_2018,
+         pct_variacao_votos = ( variacao_votos * 100 ) / total_votos_2018) |> 
+  arrange(desc(pct_variacao_votos))
+  
+```
+
+## Resposta 4:
+
+Qual deputado reeleito ganhou mais votos de 2018 para 2022?
+
+```{r}
+knitr::kable(deputados) |>  
+  kableExtra::kable_styling(font_size = 16)
+```
+
+# Hora de abrir o R!
